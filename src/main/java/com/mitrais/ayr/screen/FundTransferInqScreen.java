@@ -4,14 +4,11 @@ import com.mitrais.ayr.dto.DataPayload;
 import com.mitrais.ayr.dto.FundTransferDto;
 import com.mitrais.ayr.model.view.Component;
 import com.mitrais.ayr.model.view.Screen;
-import com.mitrais.ayr.model.view.util.EnumViewUtil;
 import com.mitrais.ayr.model.view.util.ScreenGenerator;
-import com.mitrais.ayr.model.view.util.Workflow;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static com.mitrais.ayr.model.view.util.EnumViewUtil.ComponentType.FORM;
 
@@ -39,7 +36,7 @@ public class FundTransferInqScreen extends UIAdapter {
     }
 
     @Override
-    public void notify(List<DataPayload> data) {
+    public void responseHandler(List<DataPayload> data) {
 
         FundTransferDto dto = new FundTransferDto();
 

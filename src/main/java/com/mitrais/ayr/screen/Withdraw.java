@@ -1,6 +1,7 @@
 package com.mitrais.ayr.screen;
 
 import com.mitrais.ayr.dto.DataPayload;
+import com.mitrais.ayr.dto.ResponseDto;
 import com.mitrais.ayr.dto.WithdrawDto;
 import com.mitrais.ayr.model.domain.Account;
 import com.mitrais.ayr.model.domain.UserSession;
@@ -10,16 +11,15 @@ import com.mitrais.ayr.model.view.Screen;
 import com.mitrais.ayr.model.view.util.EnumViewUtil;
 import com.mitrais.ayr.model.view.util.ScreenGenerator;
 import com.mitrais.ayr.model.view.util.Workflow;
-import com.mitrais.ayr.service.TransactionService;
 import com.mitrais.ayr.util.BusinessValidator;
 import com.mitrais.ayr.util.ResponseHandler;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-public class Withdraw extends UIAdapter implements TransactionService<WithdrawDto> {
+public class Withdraw extends UIAdapter {
 
     @Override
     public Screen construct() {
@@ -43,11 +43,10 @@ public class Withdraw extends UIAdapter implements TransactionService<WithdrawDt
         comp.add(selectNominal);
         sc.setComponent(comp);
         return sc;
-
     }
 
     @Override
-    public void notify(List<DataPayload> dp) {
+    public void responseHandler(List<DataPayload> dp) {
         DataPayload data = dp.get(0);
         if (data.getType().equals(1)) {
             UIAdapter nextFlow = Workflow.getNextFlow(data.getId());
@@ -56,22 +55,24 @@ public class Withdraw extends UIAdapter implements TransactionService<WithdrawDt
             System.out.println(data.toString());
             BusinessValidator bv = new BusinessValidator();
             String respCode = bv.WithdrawValidator(data.getValue());
-//            System.out.println("Rc :" + respCode);
             if (respCode.equals("00")) {
-                WithdrawDto dto = new WithdrawDto();
-                Account accountCache = UserSession.getAccountCache();
-                dto.setAccountId(accountCache.getAcctNo());
                 BigDecimal withdraw = new BigDecimal(data.getValue());
-                dto.setNominal(withdraw);
-                dto.setServiceId("Withdraw");
-                dto.setTrxId(UUID.randomUUID().toString());
-//                ResponseDto withdrawDto = trx(dto);
-                trx(dto);
-                if (dto.getRespCode().equals("00")) {
-                    SummaryScreen ss = new SummaryScreen(withdraw, dto.getBalance());
-                    new ScreenGenerator(ss).generate();
+                WithdrawDto withdrawDto = new WithdrawDto();
+                withdrawDto.setNominal(withdraw);
+                withdrawDto.setTrxDate(LocalDateTime.now());
+                ResponseDto<WithdrawDto> respDto = new ResponseDto<>();
+                Account accountCache = UserSession.getAccountCache();
+                BigDecimal subtract = accountCache.getBalance().subtract(withdrawDto.getNominal());
+                if (subtract.compareTo(BigDecimal.ZERO) < 0) {
+                    respDto.setRespCode("31");
+                    respDto.setMessage("Insufficient Funds");
+                    System.out.println(ResponseHandler.getMessage(respDto.getRespCode()));
                 } else {
-                    System.out.println(ResponseHandler.getMessage(dto.getRespCode()));
+                    accountCache.setBalance(subtract);
+                    withdrawDto.setBalance(subtract);
+                    respDto.setRespCode("00");
+                    SummaryScreen ss = new SummaryScreen(withdraw, withdrawDto.getBalance());
+                    new ScreenGenerator(ss).generate();
                 }
             } else {
                 System.out.println(ResponseHandler.getMessage(respCode));
@@ -79,18 +80,4 @@ public class Withdraw extends UIAdapter implements TransactionService<WithdrawDt
         }
     }
 
-
-    @Override
-    public void trx(WithdrawDto respDto) {
-        Account accountCache = UserSession.getAccountCache();
-        BigDecimal subtract = accountCache.getBalance().subtract(respDto.getNominal());
-        if (subtract.compareTo(BigDecimal.ZERO) < 0) {
-            respDto.setRespCode("31");
-            respDto.setMessage("Insufficient Funds");
-        } else {
-            accountCache.setBalance(subtract);
-            respDto.setBalance(subtract);
-            respDto.setRespCode("00");
-        }
-    }
 }

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface InputEvent {
 
-    public void notify(List<DataPayload> data);
+    public void responseHandler(List<DataPayload> data);
 }

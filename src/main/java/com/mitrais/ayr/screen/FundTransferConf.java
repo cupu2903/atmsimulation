@@ -1,16 +1,17 @@
 package com.mitrais.ayr.screen;
 
-import com.mitrais.ayr.dto.*;
+import com.mitrais.ayr.dto.DataPayload;
+import com.mitrais.ayr.dto.FundTransferDto;
+import com.mitrais.ayr.dto.ResponseDto;
 import com.mitrais.ayr.model.domain.Account;
-import com.mitrais.ayr.model.domain.AccountData;
 import com.mitrais.ayr.model.domain.UserSession;
 import com.mitrais.ayr.model.view.Component;
 import com.mitrais.ayr.model.view.OptionInput;
 import com.mitrais.ayr.model.view.Screen;
 import com.mitrais.ayr.model.view.util.EnumViewUtil;
 import com.mitrais.ayr.model.view.util.ScreenGenerator;
+import com.mitrais.ayr.service.AccountService;
 import com.mitrais.ayr.service.impl.AccountServiceImpl;
-import com.mitrais.ayr.service.TransactionService;
 import com.mitrais.ayr.util.ResponseHandler;
 
 import java.math.BigDecimal;
@@ -20,7 +21,7 @@ import java.util.List;
 import static com.mitrais.ayr.model.view.util.EnumViewUtil.ComponentType.INFO;
 import static com.mitrais.ayr.model.view.util.EnumViewUtil.ComponentType.SELECTION;
 
-public class FundTransferConf extends UIAdapter implements TransactionService<FundTransferDto> {
+public class FundTransferConf extends UIAdapter {
 
     FundTransferDto dto;
 
@@ -54,45 +55,32 @@ public class FundTransferConf extends UIAdapter implements TransactionService<Fu
     }
 
     @Override
-    public void notify(List<DataPayload> data) {
-        AccountServiceImpl as = new AccountServiceImpl();
-        Account destAccount = as.readAccount(data.get(0).getValue());
+    public void responseHandler(List<DataPayload> data) {
+        AccountService as = new AccountServiceImpl();
+        FundTransferDto dto = new FundTransferDto();
+        BigDecimal trfAmount = new BigDecimal(data.get(1).getValue());
+        dto.setDestAccount(data.get(0).getValue());
+        dto.setNominal(trfAmount);
+        dto.setRefNo(data.get(2).getValue());
+        Account destAccount = as.findByID(dto.getDestAccount());
         if (destAccount != null) {
-            System.out.println("destaccount"+destAccount.toString());
-            FundTransferDto dto = new FundTransferDto();
-            BigDecimal trfAmount = new BigDecimal(data.get(1).getValue());
-            dto.setAccountId(UserSession.accountCache.getAcctNo());
-            dto.setDestAccount(data.get(0).getValue());
-            dto.setNominal(trfAmount);
-            dto.setRefNo(data.get(2).getValue());
-            trx(dto);
-            System.out.println(dto.toString());
-            if (dto.getRespCode().equals("00")) {
-                System.out.println("dto");
+            ResponseDto<FundTransferDto> respDto = new ResponseDto<>();
+            Account sourceAcct = UserSession.accountCache;
+            BigDecimal subtract = sourceAcct.getBalance().subtract(dto.getNominal());
+            if (subtract.compareTo(BigDecimal.ZERO) < 0) {
+                respDto.setRespCode("31");
+                respDto.setMessage("Insufficient Funds");
+                System.out.println(ResponseHandler.getMessage(respDto.getRespCode()));
+            } else {
+                destAccount.setBalance(destAccount.getBalance().add(dto.getNominal()));
+                sourceAcct.setBalance(subtract);
+                dto.setBalance(subtract);
+                respDto.setRespCode("00");
                 FundTrfScreen nextFlow = new FundTrfScreen(dto);
                 new ScreenGenerator(nextFlow).generate();
-            }else{
-                System.out.println(ResponseHandler.getMessage(dto.getRespCode()));
             }
         } else {
             System.out.println(ResponseHandler.getMessage("14"));
-        }
-    }
-
-
-    @Override
-    public void trx(FundTransferDto respDto) {
-        Account sourceAcct = AccountData.account.get(respDto.getAccountId());
-        Account destAccount = AccountData.account.get(respDto.getDestAccount());
-        BigDecimal subtract = sourceAcct.getBalance().subtract(respDto.getNominal());
-        if (subtract.compareTo(BigDecimal.ZERO) < 0) {
-            respDto.setRespCode("31");
-            respDto.setMessage("Insufficient Funds");
-        } else {
-            destAccount.setBalance(destAccount.getBalance().add(respDto.getNominal()));
-            sourceAcct.setBalance(subtract);
-            respDto.setBalance(subtract);
-            respDto.setRespCode("00");
         }
     }
 }

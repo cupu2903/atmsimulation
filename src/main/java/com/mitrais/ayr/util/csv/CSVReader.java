@@ -1,15 +1,17 @@
 package com.mitrais.ayr.util.csv;
 
 import com.mitrais.ayr.model.domain.Account;
+import com.mitrais.ayr.model.domain.AccountData;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.util.Arrays;
 
 public class CSVReader {
-
     public static void read(String csvFile) {
         BufferedReader br = null;
         String line = "";
@@ -18,8 +20,12 @@ public class CSVReader {
             br = new BufferedReader(new FileReader(csvFile));
             while ((line = br.readLine()) != null) {
                 // use comma as separator
-                String[] acct = line.split(cvsSplitBy);
-                Account account = new Account(acct[3], acct[1], acct[0], new BigDecimal(acct[2]));
+                if (line != "\n") {
+                    String[] acct = line.split(cvsSplitBy);
+                    System.out.println(Arrays.toString(acct));
+                    Account account = new Account(acct[3], acct[1], acct[0], new BigDecimal(acct[2]));
+                    AccountData.account.put(account.getAcctNo(), account);
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

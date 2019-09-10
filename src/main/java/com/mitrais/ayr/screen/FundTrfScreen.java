@@ -51,7 +51,7 @@ public class FundTrfScreen extends UIAdapter {
     }
 
     @Override
-    public void notify(List<DataPayload> data) {
+    public void responseHandler(List<DataPayload> data) {
         UIAdapter nextFlow = Workflow.getNextFlow(data.get(4).getId());
         new ScreenGenerator(nextFlow).generate();
     }

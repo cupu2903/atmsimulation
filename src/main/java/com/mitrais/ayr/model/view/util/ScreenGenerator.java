@@ -38,6 +38,6 @@ public class ScreenGenerator {
                 default:
             }
         }
-        ie.notify(ldp);
+        ie.responseHandler(ldp);
     }
 }
