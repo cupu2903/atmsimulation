@@ -20,6 +20,10 @@ public class App {
 
     public static void main(String[] args) {
         AccountData.init();
+        run();
+    }
+
+    private static void run(){
         String respCode = Login.showLoginScreen(sc);
         handleAuth(respCode);
     }
@@ -33,33 +37,11 @@ public class App {
                 respCode = "75";
             }
             System.out.println(ResponseHandler.getMessage(respCode));
-            Login.showLoginScreen(sc);
+            run();
         } else {
             invalidCount = 0;
             MainMenu main = new MainMenu();
             new ScreenGenerator(main).generate();
         }
     }
-//
-//    private static void nextState(Screen screen) {
-//        String s = screen.show();
-//        System.out.println(s);
-////        ScreenStack.ss.push(screen);
-//        Screen nextPage = screen.getResponse(sc);
-//        if (nextPage != null) {
-//            nextState(nextPage);
-//        }else{
-//            MainMenu main = new MainMenu();
-//            nextState(main);
-//        }
-//    }
-
-
-//    private static void back() {
-//        Screen prevScreen = ScreenStack.ss.peek();
-//        if(prevScreen!=null){
-//            prevScreen.show();
-//        }else{
-//        }
-//    }
 }

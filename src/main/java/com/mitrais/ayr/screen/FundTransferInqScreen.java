@@ -43,8 +43,8 @@ public class FundTransferInqScreen extends UIAdapter {
 
         FundTransferDto dto = new FundTransferDto();
 
-        dto.setDestAcct(data.get(0).getValue());
-        dto.setAmount(new BigDecimal(data.get(1).getValue()));
+        dto.setDestAccount(data.get(0).getValue());
+        dto.setNominal(new BigDecimal(data.get(1).getValue()));
         dto.setRefNo(data.get(2).getValue());
         FundTransferConf nextPage = new FundTransferConf(dto);
         new ScreenGenerator(nextPage).generate();

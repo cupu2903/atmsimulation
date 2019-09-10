@@ -5,6 +5,10 @@ public class ResponseHandler {
     public static String getMessage(String respCode){
         String message;
         switch (respCode) {
+            case "30":
+            case "31":
+                message = "Insufficient Funds";
+                break;
             case "53":
                 message = "Invalid Account Number";
                 break;

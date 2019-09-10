@@ -1,8 +1,29 @@
 package com.mitrais.ayr.dto;
 
-public class ResponseDto extends TransactionDto{
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+public class ResponseDto {
     private String respCode;
     private String message;
+    private BigDecimal balance;
+
+    public ResponseDto() {
+    }
+
+    public ResponseDto(String respCode, String message, BigDecimal balance) {
+        this.respCode = respCode;
+        this.message = message;
+        this.balance = balance;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 
     public String getRespCode() {
         return respCode;
@@ -18,5 +39,14 @@ public class ResponseDto extends TransactionDto{
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseDto{" +
+                "respCode='" + respCode + '\'' +
+                ", message='" + message + '\'' +
+                ", balance=" + balance +
+                '}';
     }
 }
