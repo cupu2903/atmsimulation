@@ -2,35 +2,17 @@ package com.mitrais.ayr.dto;
 
 import java.math.BigDecimal;
 
-public class FundTransferDto {
+public class FundTransferDto extends TransactionDto {
 
-    private String destAcct;
-    private BigDecimal amount;
     private String refNo;
-    private BigDecimal balance;
+    private String destAccount;
 
-    public BigDecimal getBalance() {
-        return balance;
+    public String getDestAccount() {
+        return destAccount;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
-
-    public String getDestAcct() {
-        return destAcct;
-    }
-
-    public void setDestAcct(String destAcct) {
-        this.destAcct = destAcct;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setDestAccount(String destAccount) {
+        this.destAccount = destAccount;
     }
 
     public String getRefNo() {
@@ -39,5 +21,14 @@ public class FundTransferDto {
 
     public void setRefNo(String refNo) {
         this.refNo = refNo;
+    }
+
+    @Override
+    public String toString() {
+        return "FundTransferDto{" +
+                "refNo='" + refNo + '\'' +
+                ", destAccount='" + destAccount + '\'' +
+                "TransactionDto=" + super.toString() + '\'' +
+                '}';
     }
 }
