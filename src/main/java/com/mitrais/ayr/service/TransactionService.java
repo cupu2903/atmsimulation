@@ -8,4 +8,5 @@ import com.sun.xml.internal.bind.v2.model.core.ID;
 public interface TransactionService<T extends TransactionDto> {
 
     void trx(T T);
+
 }

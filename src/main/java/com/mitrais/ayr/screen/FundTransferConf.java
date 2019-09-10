@@ -9,7 +9,7 @@ import com.mitrais.ayr.model.view.OptionInput;
 import com.mitrais.ayr.model.view.Screen;
 import com.mitrais.ayr.model.view.util.EnumViewUtil;
 import com.mitrais.ayr.model.view.util.ScreenGenerator;
-import com.mitrais.ayr.service.AccountService;
+import com.mitrais.ayr.service.impl.AccountServiceImpl;
 import com.mitrais.ayr.service.TransactionService;
 import com.mitrais.ayr.util.ResponseHandler;
 
@@ -55,7 +55,7 @@ public class FundTransferConf extends UIAdapter implements TransactionService<Fu
 
     @Override
     public void notify(List<DataPayload> data) {
-        AccountService as = new AccountService();
+        AccountServiceImpl as = new AccountServiceImpl();
         Account destAccount = as.readAccount(data.get(0).getValue());
         if (destAccount != null) {
             System.out.println("destaccount"+destAccount.toString());

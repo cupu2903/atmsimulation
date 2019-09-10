@@ -1,8 +1,9 @@
 package com.mitrais.ayr.model.domain;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class Account {
+public class Account implements Serializable {
 
     private String acctNo;
     private String pin;
