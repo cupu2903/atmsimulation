@@ -1,13 +1,17 @@
 package com.mitrais.ayr.dto;
 
+import com.mitrais.ayr.model.domain.Transaction;
+
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class FundTransferDto {
 
-    private String destAcct;
-    private BigDecimal amount;
     private String refNo;
+    private String destAccount;
+    private BigDecimal nominal;
     private BigDecimal balance;
+    private LocalDateTime trxDate;
 
     public BigDecimal getBalance() {
         return balance;
@@ -17,20 +21,28 @@ public class FundTransferDto {
         this.balance = balance;
     }
 
-    public String getDestAcct() {
-        return destAcct;
+    public BigDecimal getNominal() {
+        return nominal;
     }
 
-    public void setDestAcct(String destAcct) {
-        this.destAcct = destAcct;
+    public void setNominal(BigDecimal nominal) {
+        this.nominal = nominal;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public LocalDateTime getTrxDate() {
+        return trxDate;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setTrxDate(LocalDateTime trxDate) {
+        this.trxDate = trxDate;
+    }
+
+    public String getDestAccount() {
+        return destAccount;
+    }
+
+    public void setDestAccount(String destAccount) {
+        this.destAccount = destAccount;
     }
 
     public String getRefNo() {
@@ -39,5 +51,14 @@ public class FundTransferDto {
 
     public void setRefNo(String refNo) {
         this.refNo = refNo;
+    }
+
+    @Override
+    public String toString() {
+        return "FundTransferDto{" +
+                "refNo='" + refNo + '\'' +
+                ", destAccount='" + destAccount + '\'' +
+                "TransactionDto=" + super.toString() + '\'' +
+                '}';
     }
 }

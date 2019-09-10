@@ -6,6 +6,8 @@ import com.mitrais.ayr.model.view.Component;
 import com.mitrais.ayr.model.view.OptionInput;
 import com.mitrais.ayr.model.view.Screen;
 import com.mitrais.ayr.model.view.util.EnumViewUtil;
+import com.mitrais.ayr.model.view.util.ScreenGenerator;
+import com.mitrais.ayr.model.view.util.Workflow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +15,8 @@ import java.util.List;
 import static com.mitrais.ayr.model.view.util.EnumViewUtil.ComponentType.INFO;
 import static com.mitrais.ayr.model.view.util.EnumViewUtil.ComponentType.SELECTION;
 
-public class FundTrfScreen extends UIAdapter{
-    FundTransferDto dto;
+public class FundTrfScreen extends UIAdapter {
+    private FundTransferDto dto;
 
     public FundTrfScreen(FundTransferDto dto) {
         this.dto = dto;
@@ -25,8 +27,8 @@ public class FundTrfScreen extends UIAdapter{
         Screen sc = new Screen();
         sc.setScreenId("21");
         sc.setScreenName("Fund Transfer Summary");
-        Component destAcct = new Component("211", INFO, "Destination Account : ", null, null, dto.getDestAcct());
-        Component amount = new Component("212", INFO, "Transfer Amount : $", null, null, String.valueOf(dto.getAmount()));
+        Component destAcct = new Component("211", INFO, "Destination Account : ", null, null, dto.getDestAccount());
+        Component amount = new Component("212", INFO, "Transfer Amount : $", null, null, String.valueOf(dto.getNominal()));
         Component refNumber = new Component("213", INFO, "Reference Number : ", null, null, dto.getRefNo());
         Component balance = new Component("214", INFO, "Balance : $", null, null, String.valueOf(dto.getBalance()));
 
@@ -49,7 +51,8 @@ public class FundTrfScreen extends UIAdapter{
     }
 
     @Override
-    public void notify(List<DataPayload> data) {
-
+    public void responseHandler(List<DataPayload> data) {
+        UIAdapter nextFlow = Workflow.getNextFlow(data.get(4).getId());
+        new ScreenGenerator(nextFlow).generate();
     }
 }

@@ -1,10 +1,13 @@
-package com.mitrais.ayr.dto;
+package com.mitrais.ayr.model.domain;
 
+import com.mitrais.ayr.dto.ResponseDto;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class TransactionDto {
+public class Transaction implements Serializable {
 
     private String trxId;
     private String serviceId;
@@ -59,5 +62,17 @@ public class TransactionDto {
 
     public void setTrxDate(LocalDateTime trxDate) {
         this.trxDate = trxDate;
+    }
+
+    @Override
+    public String toString() {
+        return "TransactionDto{" +
+                "trxId='" + trxId + '\'' +
+                ", serviceId='" + serviceId + '\'' +
+                ", accountId='" + accountId + '\'' +
+                ", trxFlag=" + trxFlag +
+                ", nominal=" + nominal +
+                ", trxDate=" + trxDate +
+                '}';
     }
 }

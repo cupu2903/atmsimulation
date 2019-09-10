@@ -2,6 +2,7 @@ package com.mitrais.ayr.screen;
 
 import com.mitrais.ayr.dto.DataPayload;
 import com.mitrais.ayr.dto.FundTransferDto;
+import com.mitrais.ayr.dto.ResponseDto;
 import com.mitrais.ayr.model.domain.Account;
 import com.mitrais.ayr.model.domain.UserSession;
 import com.mitrais.ayr.model.view.Component;
@@ -9,7 +10,9 @@ import com.mitrais.ayr.model.view.OptionInput;
 import com.mitrais.ayr.model.view.Screen;
 import com.mitrais.ayr.model.view.util.EnumViewUtil;
 import com.mitrais.ayr.model.view.util.ScreenGenerator;
-import com.mitrais.ayr.model.view.util.Workflow;
+import com.mitrais.ayr.service.AccountService;
+import com.mitrais.ayr.service.impl.AccountServiceImpl;
+import com.mitrais.ayr.util.ResponseHandler;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,8 +34,8 @@ public class FundTransferConf extends UIAdapter {
         Screen sc = new Screen();
         sc.setScreenId("21");
         sc.setScreenName("Fund Transfer Confimation Screen");
-        Component destAcct = new Component("211", INFO, "Destination Account : ", null, null, dto.getDestAcct());
-        Component amount = new Component("212", INFO, "Transfer Amount : $", null, null, String.valueOf(dto.getAmount()));
+        Component destAcct = new Component("211", INFO, "Destination Account : ", null, null, dto.getDestAccount());
+        Component amount = new Component("212", INFO, "Transfer Amount : $", null, null, String.valueOf(dto.getNominal()));
         Component refNumber = new Component("213", INFO, "Reference Number : ", null, null, dto.getRefNo());
 
         OptionInput goTrans = new OptionInput("4", "4", "1.Confirm Trx", EnumViewUtil.ActionType.GO, null);
@@ -52,19 +55,32 @@ public class FundTransferConf extends UIAdapter {
     }
 
     @Override
-    public void notify(List<DataPayload> data) {
-        for (DataPayload datum : data) {
-            System.out.println(datum.toString());
-        }
+    public void responseHandler(List<DataPayload> data) {
+        AccountService as = new AccountServiceImpl();
         FundTransferDto dto = new FundTransferDto();
         BigDecimal trfAmount = new BigDecimal(data.get(1).getValue());
-        BigDecimal balance = UserSession.accountCache.getBalance().subtract(trfAmount);
-
-        dto.setDestAcct(data.get(0).getValue());
-        dto.setAmount(trfAmount);
+        dto.setDestAccount(data.get(0).getValue());
+        dto.setNominal(trfAmount);
         dto.setRefNo(data.get(2).getValue());
-        dto.setBalance(balance);
-        UIAdapter nextFlow = new FundTrfScreen(dto);
-        new ScreenGenerator(nextFlow).generate();
+        Account destAccount = as.findByID(dto.getDestAccount());
+        if (destAccount != null) {
+            ResponseDto<FundTransferDto> respDto = new ResponseDto<>();
+            Account sourceAcct = UserSession.accountCache;
+            BigDecimal subtract = sourceAcct.getBalance().subtract(dto.getNominal());
+            if (subtract.compareTo(BigDecimal.ZERO) < 0) {
+                respDto.setRespCode("31");
+                respDto.setMessage("Insufficient Funds");
+                System.out.println(ResponseHandler.getMessage(respDto.getRespCode()));
+            } else {
+                destAccount.setBalance(destAccount.getBalance().add(dto.getNominal()));
+                sourceAcct.setBalance(subtract);
+                dto.setBalance(subtract);
+                respDto.setRespCode("00");
+                FundTrfScreen nextFlow = new FundTrfScreen(dto);
+                new ScreenGenerator(nextFlow).generate();
+            }
+        } else {
+            System.out.println(ResponseHandler.getMessage("14"));
+        }
     }
 }

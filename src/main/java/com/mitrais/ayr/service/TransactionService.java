@@ -1,10 +1,9 @@
 package com.mitrais.ayr.service;
 
-import com.mitrais.ayr.dto.FundTransferDto;
-import com.mitrais.ayr.dto.ResponseDto;
-import com.mitrais.ayr.dto.TransactionDto;
+import com.mitrais.ayr.model.domain.Transaction;
+import com.mitrais.ayr.model.IOperations;
 
-public interface TransactionService {
+public interface TransactionService extends IOperations<Transaction, String> {
 
-    public ResponseDto trx(TransactionDto dto);
+
 }

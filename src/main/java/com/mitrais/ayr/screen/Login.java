@@ -71,7 +71,7 @@ public class Login extends UIAdapter {
     }
 
     @Override
-    public void notify(List<DataPayload> data) {
+    public void responseHandler(List<DataPayload> data) {
 
     }
 }
