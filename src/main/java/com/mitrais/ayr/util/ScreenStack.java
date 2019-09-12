@@ -1,6 +1,6 @@
 package com.mitrais.ayr.util;
 
-import com.mitrais.ayr.model.view.Screen;
+import com.mitrais.ayr.view.Screen;
 
 import java.util.Stack;
 

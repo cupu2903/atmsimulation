@@ -1,15 +1,29 @@
 package com.mitrais.ayr.service.impl;
 
-import com.mitrais.ayr.model.domain.Account;
-import com.mitrais.ayr.model.domain.AccountData;
-import com.mitrais.ayr.model.domain.UserSession;
+import com.mitrais.ayr.dto.AccountDto;
+import com.mitrais.ayr.mapper.ModelMapper;
+import com.mitrais.ayr.persistence.dao.AccountDao;
+import com.mitrais.ayr.persistence.domain.Account;
 import com.mitrais.ayr.service.AccountService;
+import com.mitrais.ayr.service.common.AbstractService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class AccountServiceImpl implements AccountService {
+import static com.mitrais.ayr.security.SecurityConstants.EXPIRATION_TIME;
+import static com.mitrais.ayr.security.SecurityConstants.SECRET;
+
+public class AccountServiceImpl extends AbstractService<Account, String> implements AccountService {
+
+    @Autowired
+    AccountDao dao;
+
+    @Autowired
+    ModelMapper mapper;
 
     @Override
     public boolean checkBalance(Account acct, BigDecimal nominal) {
@@ -22,33 +36,28 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> findAll() {
-        return new ArrayList<>(AccountData.account.values());
+    protected PagingAndSortingRepository<Account, String> getDao() {
+        return dao;
+    }
+
+
+    @Override
+    public String createToken(Account userDb) {
+        List<String> authorityStrs = Arrays.asList("ROLE_USER");
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("authorities", authorityStrs);
+        String token = Jwts.builder().setSubject(userDb.getAcctNo()).addClaims(claims)
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS512, SECRET.getBytes()).compact();
+        return token;
     }
 
     @Override
-    public Account findByID(String s) {
-        return AccountData.account.get(s);
+    public AccountDto asUserDto(String acctNo) {
+        Account account = findByID(acctNo);
+        return mapper.asUserDto(account);
     }
 
-    @Override
-    public Account create(Account entity) {
-        return AccountData.account.put(entity.getAcctNo(), entity);
-    }
-
-    @Override
-    public Account update(Account entity) {
-        return null;
-    }
-
-    @Override
-    public void delete(Account entity) {
-        AccountData.account.remove(entity);
-    }
-
-    @Override
-    public void deleteById(String entityId) {
-
-    }
 
 }

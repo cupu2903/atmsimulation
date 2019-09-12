@@ -1,50 +1,20 @@
 package com.mitrais.ayr.service.impl;
 
-import com.mitrais.ayr.model.domain.Transaction;
+import com.mitrais.ayr.persistence.dao.TransactionLogDao;
+import com.mitrais.ayr.persistence.domain.TransactionLog;
 import com.mitrais.ayr.service.TransactionService;
+import com.mitrais.ayr.service.common.AbstractService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.List;
 
-import static com.mitrais.ayr.model.domain.TransactionData.*;
+public class TransactionServiceImpl extends AbstractService<TransactionLog,String> implements TransactionService {
 
-public class TransactionServiceImpl implements TransactionService {
-
-    @Override
-    public List<Transaction> findAll() {
-        return ltx;
-    }
+    @Autowired
+    TransactionLogDao dao;
 
     @Override
-    public Transaction findByID(String s) {
-        int index = ltx.indexOf(s);
-        if (index == -1) {
-            return null;
-        } else {
-            return ltx.get(index);
-        }
-    }
-
-    @Override
-    public Transaction create(Transaction entity) {
-        if (ltx.add(entity)) {
-            return entity;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public Transaction update(Transaction entity) {
-        return null;
-    }
-
-    @Override
-    public void delete(Transaction entity) {
-        ltx.remove(entity);
-    }
-
-    @Override
-    public void deleteById(String entityId) {
-
+    protected PagingAndSortingRepository<TransactionLog, String> getDao() {
+        return dao;
     }
 }

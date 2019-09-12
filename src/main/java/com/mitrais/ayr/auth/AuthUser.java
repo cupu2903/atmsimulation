@@ -1,8 +1,8 @@
 package com.mitrais.ayr.auth;
 
-import com.mitrais.ayr.model.domain.Account;
-import com.mitrais.ayr.model.domain.AccountData;
-import com.mitrais.ayr.model.domain.UserSession;
+import com.mitrais.ayr.persistence.domain.Account;
+import com.mitrais.ayr.persistence.domain.AccountData;
+import com.mitrais.ayr.persistence.domain.UserSession;
 
 public class AuthUser {
 

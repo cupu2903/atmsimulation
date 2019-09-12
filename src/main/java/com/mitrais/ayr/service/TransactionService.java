@@ -1,9 +1,9 @@
 package com.mitrais.ayr.service;
 
-import com.mitrais.ayr.model.domain.Transaction;
-import com.mitrais.ayr.model.IOperations;
+import com.mitrais.ayr.persistence.domain.TransactionLog;
+import com.mitrais.ayr.persistence.IOperations;
 
-public interface TransactionService extends IOperations<Transaction, String> {
+public interface TransactionService extends IOperations<TransactionLog, String> {
 
 
 }

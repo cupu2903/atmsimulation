@@ -1,14 +1,13 @@
 package com.mitrais.ayr.util.csv;
 
-import com.mitrais.ayr.model.domain.Account;
-import com.mitrais.ayr.model.domain.AccountData;
+import com.mitrais.ayr.persistence.domain.Account;
+import com.mitrais.ayr.persistence.domain.AccountData;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.util.Arrays;
 
 public class CSVReader {

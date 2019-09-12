@@ -1,7 +1,5 @@
 package com.mitrais.ayr.dto;
 
-import com.mitrais.ayr.model.domain.Transaction;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
