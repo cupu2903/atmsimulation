@@ -1,17 +1,19 @@
 package com.mitrais.ayr.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
+/**
+ * @author Achmad Yusuf Ramadhan cupu2903@gmail.com
+ * @version 0.4
+ * @since 12/09/2019
+ * represent as Response Data for Account Statement Service
+ */
 public class TransactionDto {
-
     private String trxId;
-    private String serviceId;
-    private String accountId;
-    private Integer trxFlag;
+    private String trxDate;
+    private String serviceName;
     private BigDecimal nominal;
-    private LocalDateTime trxDate;
+    private int dcFlag;
 
     public String getTrxId() {
         return trxId;
@@ -21,28 +23,20 @@ public class TransactionDto {
         this.trxId = trxId;
     }
 
-    public String getServiceId() {
-        return serviceId;
+    public String getTrxDate() {
+        return trxDate;
     }
 
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setTrxDate(String trxDate) {
+        this.trxDate = trxDate;
     }
 
-    public String getAccountId() {
-        return accountId;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
-
-    public Integer getTrxFlag() {
-        return trxFlag;
-    }
-
-    public void setTrxFlag(Integer trxFlag) {
-        this.trxFlag = trxFlag;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public BigDecimal getNominal() {
@@ -53,11 +47,11 @@ public class TransactionDto {
         this.nominal = nominal;
     }
 
-    public LocalDateTime getTrxDate() {
-        return trxDate;
+    public int getDcFlag() {
+        return dcFlag;
     }
 
-    public void setTrxDate(LocalDateTime trxDate) {
-        this.trxDate = trxDate;
+    public void setDcFlag(int dcFlag) {
+        this.dcFlag = dcFlag;
     }
 }

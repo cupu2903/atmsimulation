@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %message%n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="TIME_BASED_FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>/opt/applications/atms/logs/log.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>/opt/applications/atms/logs/%d{yyyy-MM}/log-%d{dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %message%n
+			</pattern>
+		</encoder>
+	</appender>
+	<logger name="org.springframework" level="info" />
+	<logger name="org.springframework.transaction" level="info" />
+
+	<!-- in order to debug some marshalling issues, this needs to be TRACE -->
+	<logger name="org.springframework.web.servlet.mvc" level="info" />
+	<logger name="org.hibernate" level="info" />
+	<logger name="org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl" level="TRACE" />
+
+	<logger name="com.basys.adb" level="TRACE" />
+	<logger name="org.springframework.web.client" level="info"/>
+	<root level="debug">
+ 		<!--<appender-ref ref="STDOUT" />--> 
+		<appender-ref ref="TIME_BASED_FILE" />
+	</root>
+</configuration>
